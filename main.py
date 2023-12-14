@@ -13,7 +13,7 @@ from Parsers.phpParser import phpParser
 from Parsers.rustParser import rustParser
 from Parsers.swiftParser import swiftParser
 from Parsers.yarnParser import YarnParser
-
+from Parsers.rubyParser import rubyparser
 from Utility.helpers import get_project_path
 
 
@@ -50,6 +50,8 @@ def createsbom(path):
     mavenParser(path, sbom)
     rustParser(path, sbom)
     # swiftParser(path, sbom)
+    sbom=rubyparser(path,sbom)
+    
 
     with open(os.path.join(path, "sbom.json"), "w", encoding="utf-8") as file:
         json.dump(sbom, file, indent=4)

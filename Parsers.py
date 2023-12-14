@@ -406,6 +406,8 @@ def gradleGroovyParser(path, sbom):
 
             purl = f"pkg:maven/{grp}/{name}@{ver}"
             bomref = purl
+            if "components" not in sbom["metadata"]["component"]:
+                sbom["metadata"]["component"]["components"] = []
             sbom["metadata"]["component"]["components"].append(
                 {
                     "group": grp,
@@ -461,7 +463,7 @@ def gradleGroovyParser(path, sbom):
                                 "bom-ref": bomref,
                                 "properties": [
                                     {
-                                        "name": "FradleProfleName", 
+                                        "name": "GradleProfleName", 
                                         "value": "complieClasspath"
                                         if scope in ["implementation", "api"]
                                         else "testCompileClasspath"
@@ -788,4 +790,4 @@ def createsbom(path):
 
 
 if __name__ == "__main__":
-    createsbom("toy_robot")
+    createsbom("C:\\Users\\divya\\OneDrive\\Pictures\\Desktop\\sih2023\\gradle\\EPubHant2Hans")

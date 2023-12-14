@@ -406,6 +406,8 @@ def gradleGroovyParser(path, sbom):
 
             purl = f"pkg:maven/{grp}/{name}@{ver}"
             bomref = purl
+            if "components" not in sbom["metadata"]["component"]:
+                sbom["metadata"]["component"]["components"] = []
             sbom["metadata"]["component"]["components"].append(
                 {
                     "group": grp,
@@ -461,7 +463,7 @@ def gradleGroovyParser(path, sbom):
                                 "bom-ref": bomref,
                                 "properties": [
                                     {
-                                        "name": "FradleProfleName", 
+                                        "name": "GradleProfleName", 
                                         "value": "complieClasspath"
                                         if scope in ["implementation", "api"]
                                         else "testCompileClasspath"
@@ -506,6 +508,8 @@ def gradlekotlinDSLParser(path, sbom):
             src = source_match.group(1) if source_match else ""
 
             purl = f"pkg:maven/{grp}/{name}@{ver}"
+            if "components" not in sbom["metadata"]["component"]:
+                sbom["metadata"]["component"]["components"] = []
             bomref = purl
             sbom["metadata"]["component"]["components"].append(
                 {
@@ -852,4 +856,6 @@ def createsbom(path):
 
 
 if __name__ == "__main__":
-    createsbom("../toy_robot")
+
+    createsbom("C:\\Users\\divya\\OneDrive\\Pictures\\Desktop\\sih2023\\gradle\\SoskaRikcyAndMorty")
+

@@ -1,10 +1,10 @@
 import os
+import glob
 import xml.etree.ElementTree as ET
 
 def dotnetParser(path, sbom):
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            if file.endswith(".csproj"):
+      for p in glob.glob(os.path.join(path, '**', '*.csproj'), recursive=True):
+        with open(p, 'r', encoding='utf-8') as file:
                 tree = ET.parse(file)
                 root = tree.getroot()
                 item_group = root.find("ItemGroup")

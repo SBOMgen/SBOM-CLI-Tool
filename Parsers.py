@@ -508,6 +508,8 @@ def gradlekotlinDSLParser(path, sbom):
             src = source_match.group(1) if source_match else ""
 
             purl = f"pkg:maven/{grp}/{name}@{ver}"
+            if "components" not in sbom["metadata"]["component"]:
+                sbom["metadata"]["component"]["components"] = []
             bomref = purl
             sbom["metadata"]["component"]["components"].append(
                 {
@@ -790,4 +792,4 @@ def createsbom(path):
 
 
 if __name__ == "__main__":
-    createsbom("C:\\Users\\divya\\OneDrive\\Pictures\\Desktop\\sih2023\\gradle\\EPubHant2Hans")
+    createsbom("C:\\Users\\divya\\OneDrive\\Pictures\\Desktop\\sih2023\\gradle\\SoskaRikcyAndMorty")

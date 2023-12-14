@@ -6,7 +6,7 @@ def swiftParser(path, sbom):
     for root, dirs, files in os.walk(path):
         for file in files:
             file_path = os.path.join(root, file)
-            if file.endswith(".resolved") or file.endswith(".json"):
+            if file.endswith(".resolved"):
                 with open(file_path, "r", encoding="utf-8") as json_file:
                     try:
                         data = json.load(json_file)
@@ -36,7 +36,7 @@ def swiftParser(path, sbom):
                                 }
                                 sbom["dependencies"].append(dependency)
                     except JSONDecodeError as e:
-                        print(f"Error decoding JSON in file {file_path}: {e}")
-                        print(f"Skipping file: {file_path}")
+                        # print(f"Error decoding JSON in file {file_path}: {e}")
+                        # print(f"Skipping file: {file_path}")
                         # Skip the file and continue with the next one
                         continue

@@ -65,23 +65,38 @@ def gradlekotlinDSLParser(path, sbom):
                             "purl": purl,
                             "type": "library",
                             "bom-ref": bomref,
+                            "evidence": {
+                                "identity": {
+                                    "field": "purl",
+                                    "confidence": 1,
+                                    "methods": [
+                                        {
+                                            "technique": "manifest-analysis",
+                                            "confidence": 1,
+                                            "value": p,
+                                        }
+                                    ],
+                                }
+                            },
+                            "properties": [{"name": "GradleProfileName", "value": p}],
                         }
-                        value = (
-                            "api"
-                            if scope in ["implementation", "api", "kapt"]
-                            else "testCompileClasspath"
-                            if scope
-                            in [
-                                "testImplementation",
-                                "testCompileOnly",
-                                "testRuntimeOnly",
-                            ]
-                            else "runtimeClasspath"
-                            if scope in ["runtimeOnly"]
-                            else "compileOnlyClasspath"
-                            if scope in ["compileOnly"]
-                            else "unknown"
-                        )
+
+                        # value = (
+                        #     "api"
+                        #     if scope in ["implementation", "api", "kapt"]
+                        #     else "testCompileClasspath"
+                        #     if scope
+                        #     in [
+                        #         "testImplementation",
+                        #         "testCompileOnly",
+                        #         "testRuntimeOnly",
+                        #     ]
+                        #     else "runtimeClasspath"
+                        #     if scope in ["runtimeOnly"]
+                        #     else "compileOnlyClasspath"
+                        #     if scope in ["compileOnly"]
+                        #     else "unknown"
+                        # )
                         scope = (
                             "required"
                             if scope in ["implementation", "api"]
@@ -98,9 +113,9 @@ def gradlekotlinDSLParser(path, sbom):
                         )
                         if scope != "classpath":
                             component["scope"] = scope
-                            component["properties"] = [
-                                {"name": "GradleProfileName", "value": value}
-                            ]
+                        #     component["properties"] = [
+                        #         {"name": "GradleProfileName", "value": value}
+                        #     ]
 
                         sbom["components"].append(component)
                     dependencies[bomref] = []

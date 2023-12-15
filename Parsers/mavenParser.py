@@ -11,12 +11,28 @@ def mavenParser(path, sbom):
         project_tree = ET.parse(p)
         project_root = project_tree.getroot()
 
-        groupId = project_root.find("mvn:groupId", namespaces).text
-        artifactId = project_root.find("mvn:artifactId", namespaces).text
-        version = project_root.find("mvn:version", namespaces).text
         tree = ET.parse(p)
         root = tree.getroot()
-
+        groupId = root.find("mvn:groupId", namespaces).text
+        artifactId = root.find("mvn:artifactId", namespaces).text
+        version = root.find("mvn:version", namespaces).text
+        purl = f"pkg:maven/{groupId}/{artifactId}@{version}"
+        if "components" not in sbom["metadata"]["component"]:
+            sbom["metadata"]["component"]["components"] = []
+        sbom["metadata"]["component"]["components"].append(
+            {
+                "group": groupId,
+                "name": artifactId,
+                "version": version,
+                "purl": purl,
+                "type": "library",
+                "bom-ref": purl,
+                "properties": [
+                    {"name": "buildFile", "value": p},
+                    {"name": "projectDir", "value": os.path.split(p)[0]},
+                    {"name": "rootDir", "value": path},
+                ],
+            })
         for dependency in root.findall(".//mvn:dependency", namespaces):
             groupId = dependency.find("mvn:groupId", namespaces).text
             artifactId = dependency.find("mvn:artifactId", namespaces).text
@@ -35,6 +51,20 @@ def mavenParser(path, sbom):
                     "group": groupId,
                     "purl": purl,
                     "scope": scope,
+                    "evidence": {
+                        "identity": {
+                            "field": "purl",
+                            "confidence": 1,
+                            "methods": [
+                                {
+                                    "technique": "manifest-analysis",
+                                    "confidence": 1,
+                                    "value": p,
+                                }
+                            ],
+                        }
+                    },
+                    "properties": [{"name": "SrcFile", "value": p}],
                 }
             )
             sbom["dependencies"].append({"ref": purl, "dependsOn": []})

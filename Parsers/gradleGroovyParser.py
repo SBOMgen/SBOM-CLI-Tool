@@ -79,23 +79,37 @@ def gradleGroovyParser(path, sbom):
                                 "purl": purl,
                                 "type": "library",
                                 "bom-ref": bomref,
+                                "evidence": {
+                                    "identity": {
+                                        "field": "purl",
+                                        "confidence": 1,
+                                        "methods": [
+                                            {
+                                                "technique": "manifest-analysis",
+                                                "confidence": 1,
+                                                "value": p,
+                                            }
+                                        ],
+                                    }
+                                },
                                 "properties": [
                                     {
                                         "name": "GradleProfleName", 
-                                        "value": "complieClasspath"
-                                        if scope in ["implementation", "api"]
-                                        else "testCompileClasspath"
-                                        if scope
-                                        in [
-                                            "testImplementation",
-                                            "testCompileOnly",
-                                            "testRuntimeOnly",
-                                        ]
-                                        else "runtimeClasspath"
-                                        if scope in ["runtimeOnly"]
-                                        else "compileOnlyClasspath"
-                                        if scope in ["compileOnly"]
-                                        else "unknown",
+                                        "value": p,
+                                        # "complieClasspath"
+                                        # if scope in ["implementation", "api"]
+                                        # else "testCompileClasspath"
+                                        # if scope
+                                        # in [
+                                        #     "testImplementation",
+                                        #     "testCompileOnly",
+                                        #     "testRuntimeOnly",
+                                        # ]
+                                        # else "runtimeClasspath"
+                                        # if scope in ["runtimeOnly"]
+                                        # else "compileOnlyClasspath"
+                                        # if scope in ["compileOnly"]
+                                        # else "unknown",
                                     }
                                 ],
                             }

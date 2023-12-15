@@ -1,11 +1,10 @@
 import glob
 import os
 
+
 def conanParser(path, sbom):
     component_data = {}
-    for conanfile_path in glob.glob(
-        os.path.join(path, "**", "conanfile.txt"), recursive=True
-    ):
+    for conanfile_path in glob.glob(os.path.join(path, "**", "conanfile.txt"), recursive=True):
         with open(conanfile_path, "r", encoding="utf-8") as file:
             f = False
             for line in file:

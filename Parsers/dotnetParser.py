@@ -18,5 +18,19 @@ def dotnetParser(path, sbom):
                                 "purl": f"pkg:nuget/{item.get('Include')}@{item.get('Version')}",
                                 "type": "library",
                                 "bom-ref": f"pkg:nuget/{item.get('Include')}@{item.get('Version')}",
+                                "evidence": {
+                                    "identity": {
+                                        "field": "purl",
+                                        "confidence": 1,
+                                        "methods": [
+                                            {
+                                                "technique": "manifest-analysis",
+                                                "confidence": 1,
+                                                "value": os.path.abspath(p)
+                                            }
+                                        ],
+                                    }
+                                },
+                                "properties": [{"name": "SrcFile", "value": os.path.abspath(p)}],
                             }
                             sbom["components"].append(component)

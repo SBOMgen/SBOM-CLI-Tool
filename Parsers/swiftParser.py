@@ -15,29 +15,7 @@ def replace_placeholders(data):
         data = data.replace("{{", "").replace("}}", "").replace("$", "dummy_")
     return data
 
-def createsbom(path):
-    projectName = os.path.split(path)[-1]
-    sbom = {
-        "bomFormat": "CycloneDX",
-        "specVersion": "1.5",
-        "version": "1",
-        "metadata": {
-            "timestamp": datetime.datetime.now().isoformat(),
-            "component": {
-                "group": "",
-                "name": projectName,
-                "version": "0.0.0",
-                "purl": f"pkg:swift/{projectName.lower()}@0.0.0",
-                "type": "application",
-                "bom-ref": f"pkg:swift/{projectName.lower()}@0.0.0"
-            }
-        },
-        "components": [],
-        "services": [],
-        "dependencies": []
-    }
-
-    def process_pin(pin):
+def process_pin(pin):
         package = pin["package"]
         version = pin["state"]["version"]
         repositoryURL = pin["repositoryURL"]
@@ -49,7 +27,7 @@ def createsbom(path):
             "purl": f"pkg:swift/{package.lower()}@{version}",
             "type": "library",
             "bom-ref": f"pkg:swift/{package.lower()}@{version}",
-            "repositoryURL": repositoryURL
+            "repositoryURL": repositoryURL,
         }
         dependency = {
             "group": "",
@@ -69,6 +47,8 @@ def createsbom(path):
 
         return component, dependency
 
+def swiftParser(path, sbom):
+    projectName = os.path.split(path)[-1]
     for root, dirs, files in os.walk(path):
         for file in files:
             file_path = os.path.join(root, file)
@@ -89,9 +69,7 @@ def createsbom(path):
                         # print(f"Skipping file: {file_path}")
                         continue
 
-    with open(os.path.join(path, 'sbom.json'), 'w', encoding='utf-8') as file1:
-        json.dump(sbom, file1, indent=4)
-
+    # with open(os.path.join(path, 'sbom.json'), 'w', encoding='utf-8') as file1:
+    #     json.dump(sbom, file1, indent=4)
+    # print(sbom)
     return sbom
-
-createsbom("C:\\Users\\2022a\\OneDrive\\Desktop\\sbom\\amplify-swift")

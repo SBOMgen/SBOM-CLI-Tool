@@ -50,7 +50,7 @@ def createsbom(path):
     mavenParser(path, sbom)
     rustParser(path, sbom)
     swiftParser(path, sbom)
-    sbom=rubyparser(path,sbom)
+    rubyparser(path,sbom)
     
 
     with open(os.path.join(path, "sbom.json"), "w", encoding="utf-8") as file:

@@ -73,6 +73,7 @@ if __name__ == "__main__":
     else:
         project_path = get_project_path()
     print("\n🚀 Generating SBOM...")
+    project_path = os.path.abspath(project_path)
     createsbom(project_path)
     print(f"\n✅ SBOM generated successfully!")
-    print(f"📄 SBOM file is located at: {os.path.abspath(os.path.join(project_path, 'sbom.json'))}")
+    print(f"📄 SBOM file is located at: {os.path.join(project_path, 'sbom.json')}")

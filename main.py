@@ -49,8 +49,8 @@ def createsbom(path):
     gradlekotlinDSLParser(path, sbom)
     mavenParser(path, sbom)
     rustParser(path, sbom)
-    # swiftParser(path, sbom)
-    sbom=rubyparser(path,sbom)
+    swiftParser(path, sbom)
+    rubyparser(path,sbom)
     
 
     with open(os.path.join(path, "sbom.json"), "w", encoding="utf-8") as file:
@@ -75,4 +75,4 @@ if __name__ == "__main__":
     print("\n🚀 Generating SBOM...")
     createsbom(project_path)
     print(f"\n✅ SBOM generated successfully!")
-    print(f"📄 SBOM file is located at: {project_path}/sbom.json")
+    print(f"📄 SBOM file is located at: {os.path.abspath(os.path.join(project_path, 'sbom.json'))}")

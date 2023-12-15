@@ -12,7 +12,7 @@ def conanParser(path, sbom):
                     parts = line
                     f = False
                 if f:
-                    package_name, package_version = line.split("/")
+                    package_name, package_version = line.strip().split("/")
                     component_data[package_name] = package_version
                 if line.startswith("[requires]"):
                     parts = line
@@ -48,11 +48,7 @@ def conanParser(path, sbom):
 
             sbom["components"].append(component)
     for component in sbom["components"]:
-        dependencies_ref = [
-            dep["bom-ref"]
-            for dep in sbom["components"]
-            if dep["name"] in component_data
-        ]
+        dependencies_ref = []
         sbom["dependencies"].append(
             {"ref": component["bom-ref"], "dependsOn": dependencies_ref}
         )

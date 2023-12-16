@@ -14,6 +14,7 @@ from Parsers.rustParser import rustParser
 from Parsers.swiftParser import swiftParser
 from Parsers.yarnParser import YarnParser
 from Parsers.rubyParser import rubyparser
+from Parsers.requirementsParser import requirementsParser
 from Utility.helpers import get_project_path
 
 
@@ -42,6 +43,7 @@ def createsbom(path):
     phpParser(path, sbom)
     npmParser(path, sbom)
     YarnParser(path, sbom)
+    requirementsParser(path, sbom)
     conanParser(path, sbom)
     dartParser(path, sbom)
     dotnetParser(path, sbom)

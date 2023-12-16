@@ -14,6 +14,8 @@ from Parsers.rustParser import rustParser
 from Parsers.swiftParser import swiftParser
 from Parsers.yarnParser import YarnParser
 from Parsers.rubyParser import rubyparser
+from Parsers.requirementsParser import requirementsParser
+from Parsers.gomodParser import goModParser
 from Utility.helpers import get_project_path
 
 

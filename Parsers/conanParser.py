@@ -47,8 +47,3 @@ def conanParser(path, sbom):
             }
 
             sbom["components"].append(component)
-    for component in sbom["components"]:
-        dependencies_ref = []
-        sbom["dependencies"].append(
-            {"ref": component["bom-ref"], "dependsOn": dependencies_ref}
-        )

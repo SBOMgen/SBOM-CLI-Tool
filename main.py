@@ -14,8 +14,8 @@ from Parsers.rustParser import rustParser
 from Parsers.swiftParser import swiftParser
 from Parsers.yarnParser import YarnParser
 from Parsers.rubyParser import rubyparser
+from Parsers.gomodParser import goModParser
 from Utility.helpers import get_project_path
-
 
 
 def createsbom(path):
@@ -51,7 +51,7 @@ def createsbom(path):
     rustParser(path, sbom)
     swiftParser(path, sbom)
     rubyparser(path,sbom)
-    
+    goModParser(path,sbom)
 
     with open(os.path.join(path, "sbom.json"), "w", encoding="utf-8") as file:
         json.dump(sbom, file, indent=4)

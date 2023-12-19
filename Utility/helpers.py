@@ -53,13 +53,3 @@ def get_project_path():
     else:
         output_file = 'json'
     return project_path, output_file
-
-def change_directory(cwd, path):
-    abs_path = os.path.abspath(os.path.join(cwd, path))
-    try:
-        os.chdir(abs_path)
-        print(f"Changed directory to: {abs_path}")
-    except FileNotFoundError:
-        print(f"Directory not found: {abs_path}")
-    except PermissionError:
-        print(f"Permission denied to access: {abs_path}")

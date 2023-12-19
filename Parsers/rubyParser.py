@@ -1,9 +1,6 @@
 import os
 import re
 import glob
-import subprocess
-from Utility.helpers import change_directory
-
 global_dict =[]
 def global_dict_list(content):
     current_gem = None
@@ -36,7 +33,7 @@ def parse_gemfile_lock(content, sbom, lock_file_path):
                 "name": current_gem,
                 "version": match_gem.group(2),
                 "type": "library",
-                "bom-ref": f"pkg:ruby/{current_gem}@{match_gem.group(2)}",
+                "bom-ref": f"pkg:gem/{current_gem}@{match_gem.group(2)}",
                 "dependsOn":[],
                 "evidence": {
        "identity": {
@@ -57,7 +54,7 @@ def parse_gemfile_lock(content, sbom, lock_file_path):
                 }
             }
             component2={
-                "bom-ref": f"pkg:ruby/{current_gem}@{match_gem.group(2)}",
+                "bom-ref": f"pkg:gem/{current_gem}@{match_gem.group(2)}",
                 "dependsOn":[],
             }
             
@@ -97,7 +94,7 @@ def parse_gemfile_lock(content, sbom, lock_file_path):
                      for j in global_dict:
                          if(j["name"] == i["name"]):
                              i["version"] = j["version"]
-                     k= "pkg:ruby/"+i["name"]+"@"+i["version"]        
+                     k= "pkg:gem/"+i["name"]+"@"+i["version"]        
                      dict.append(k)
                 component2["dependsOn"] =dict    
 
@@ -113,18 +110,11 @@ def parse_gemfile_lock(content, sbom, lock_file_path):
     
 
 def rubyparser(path, sbom):
-    try:
-        subprocess.run(["gem", "install", "bundler"], check=True)
-        print("Bundler installed successfully.")
-        change_directory(os.getcwd, path)
-        subprocess.run(["bundle", "install"], check=True)
-    except subprocess.CalledProcessError as e:
-        print(f"Error installing Bundler: {e}")
-    for p in glob.glob(os.path.join(path, "**", 'Gemfile.lock'), recursive=True):
-        with open(p, 'r') as lock_file:
-            gemfile_lock_content = lock_file.read()
+   for p in glob.glob(os.path.join(path, "**", 'Gemfile.lock'), recursive=True):
+       with open(p, 'r') as lock_file:
+           gemfile_lock_content = lock_file.read()
 
-        sbom = parse_gemfile_lock(gemfile_lock_content, sbom, p)
+       sbom = parse_gemfile_lock(gemfile_lock_content, sbom, p)
 
    
 

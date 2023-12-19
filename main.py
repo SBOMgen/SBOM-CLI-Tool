@@ -2,6 +2,7 @@
 import json, os
 import datetime
 import argparse
+import dicttoxml
 import xml.etree.ElementTree as ET
 from xml.dom.minidom import parseString
 
@@ -100,26 +101,13 @@ def createsbomXML(path):
     rubyparser(path,sbom)
     goModParser(path,sbom)
 
-    root = ET.Element('root')
-    dict_to_xml(sbom, root)
-    xmlStr = ET.tostring(root).decode('utf-8')
+    
+    xmlStr = dicttoxml.dicttoxml(sbom)
     dom = parseString(xmlStr)
     prettyXML = dom.toprettyxml()
     with open(os.path.join(path, "sbom.xml"), "w") as file:
         file.write(prettyXML)
 
-def dict_to_xml(d, parent):
-    for key, val in d.items():
-        if isinstance(val, dict):
-            child = ET.SubElement(parent, key)
-            dict_to_xml(val, child)
-        elif isinstance(val, list):
-            for item in val:
-                child = ET.SubElement(parent, key)
-                dict_to_xml(item, child)
-        else:
-            child = ET.SubElement(parent, key)
-            child.text = str(val)
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate Software Bill of Materials (SBOM) for a project.')
     # parser = argparse.ArgumentParser(description='Generate SBOM')
@@ -129,7 +117,7 @@ if __name__ == "__main__":
     parser.add_argument('-f', '--format', type=str, help='The output file format')
 
     args = parser.parse_args()
-
+    output_file=''
     if args.project_path:
         user_input_path = args.project_path
         if not os.path.isabs(user_input_path):
@@ -137,37 +125,25 @@ if __name__ == "__main__":
 
         project_path = user_input_path
     else:
-        project_path = get_project_path()
+        project_path, output_file= get_project_path()
+        output_file = f"sbom.{output_file}"
     project_path = os.path.abspath(project_path)
-    if args.format:
-        if args.format not in ['xml', 'json'] or args.format == 'json':
-            if args.format not in ['xml','json']: print('Invalid output format\n\nGenerating in json')
+    if(output_file==""):
+        if args.format:
+            if args.format not in ['xml', 'json'] or args.format == 'json':
+                if args.format not in ['xml','json']: print('Invalid output format\n\nGenerating in json')
+                output_file = 'sbom.json'
+            elif args.format=='xml':
+                    createsbomXML(project_path)
+                    output_file = f'sbom.{args.format}'
+            
+        else:
             output_file = 'sbom.json'
-            createsbomJson(project_path)
-        elif args.format=='xml':
-                createsbomXML(project_path)
-                output_file = f'sbom.{args.format}'
-        
-    else:
-        output_file = 'sbom.json'
+    if output_file=='sbom.json':
         createsbomJson(project_path)
-
+    else:
+        createsbomXML(project_path)            
     print("\n🚀 Generating SBOM...")
-    output_file = os.path.abspath(output_file)
-    # createsbomXML(project_path, output_file)
     print(f"\n✅ SBOM generated successfully!")
     print(f"📄 SBOM file is located at: {os.path.join(project_path, output_file)}")
-    # args = parser.parse_args()
-    # if args.project_path:
-    #     user_input_path = args.project_path
-    #     if not os.path.isabs(user_input_path):
-    #         user_input_path = os.path.join(os.getcwd(), user_input_path)
 
-    #     project_path = user_input_path
-    # else:
-    #     project_path = get_project_path()
-    # print("\n🚀 Generating SBOM...")
-    # project_path = os.path.abspath(project_path)
-    # createsbomXML(project_path)
-    # print(f"\n✅ SBOM generated successfully!")
-    # print(f"📄 SBOM file is located at: {os.path.join(project_path, 'sbom.xml')}")

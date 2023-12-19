@@ -44,5 +44,12 @@ def get_project_path():
         project_path = user_input_path
     else:
         project_path = os.path.join(os.getcwd(), user_input_path)
-
-    return project_path
+    user_input_format = input("📄 Output Format (xml/json): ")
+    if user_input_format not in ['xml', 'json'] or user_input_format == 'json':
+        if user_input_format not in ['xml','json']: print('Invalid output format\n\nGenerating in json')
+        output_file = 'json'
+    elif user_input_format=='xml':
+            output_file = 'xml'
+    else:
+        output_file = 'json'
+    return project_path, output_file

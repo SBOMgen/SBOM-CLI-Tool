@@ -22,7 +22,7 @@ from Parsers.rubyParser import rubyparser
 from Parsers.requirementsParser import requirementsParser
 from Parsers.gomodParser import goModParser
 from Utility.helpers import get_project_path
-
+from Utility.dependencyTree import DependencyTree
 
 def createsbomJson(path):
     projname = os.path.split(path)[-1]
@@ -108,6 +108,7 @@ def createsbomXML(path):
     prettyXML = dom.toprettyxml()
     with open(os.path.join(path, "sbom.xml"), "w") as file:
         file.write(prettyXML)
+    return sbom
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate Software Bill of Materials (SBOM) for a project.')
@@ -117,9 +118,12 @@ if __name__ == "__main__":
     parser.add_argument('-p', '--project_path', type=str, help='The path to the project')
     parser.add_argument('-f', '--format', type=str, help='The output file format')
     parser.add_argument('--vul', action='store_true', help='Include vulnerability information (yes/no)')
-    
+    parser.add_argument('--tree', action='store_true', help='Generate dependency tree (yes/no)')
+    sbom={}
     args = parser.parse_args()
     output_file=''
+    user_input_report=''
+    treeFlag=False
     if args.project_path:
         user_input_path = args.project_path
         if not os.path.isabs(user_input_path):
@@ -127,25 +131,27 @@ if __name__ == "__main__":
 
         project_path = user_input_path
     else:
-        project_path, output_file, user_input_report= get_project_path()
+        project_path, output_file, user_input_report, treeFlag= get_project_path()
         output_file = f"sbom.{output_file}"
     project_path = os.path.abspath(project_path)
     if(output_file==""):
         if args.format:
             if args.format not in ['xml', 'json'] or args.format == 'json':
-                if args.format not in ['xml','json']: print('Invalid output format\n\nGenerating in json')
-                output_file = 'sbom.json'
-            elif args.format=='xml':
-                    createsbomXML(project_path)
+                if args.format not in ['xml','json']: 
+                    print('Invalid output format\n\nGenerating in json')
+                    output_file = 'sbom.json'
+                else :
                     output_file = f'sbom.{args.format}'
             
         else:
             output_file = 'sbom.json'
     print("\n🚀 Generating SBOM...")
     if output_file=='sbom.json':
-        createsbomJson(project_path)
+        sbom=createsbomJson(project_path)
     else:
-        createsbomXML(project_path)    
+        sbom = createsbomXML(project_path)
+    if args.tree or treeFlag:
+        DependencyTree(sbom, project_path)
     print(f"\n✅ SBOM generated successfully!")
     print(f"📄 SBOM file is located at: {os.path.join(project_path, output_file)}")
     if args.vul or user_input_report=='yes':

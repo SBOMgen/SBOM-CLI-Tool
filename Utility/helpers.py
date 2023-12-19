@@ -53,4 +53,8 @@ def get_project_path():
             output_file = 'xml'
     else:
         output_file = 'json'
-    return project_path, output_file, user_input_report
+    user_input_tree = input("🌳 Generate dependency tree (yes/no): ")
+    treeFlag = False
+    if user_input_tree == 'yes':
+        treeFlag = True
+    return project_path, output_file, user_input_report, treeFlag

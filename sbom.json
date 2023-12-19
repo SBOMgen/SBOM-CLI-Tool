@@ -1,0 +1,17 @@
+{
+    "bomFormat": "CycloneDX",
+    "specVersion": "1.5",
+    "version": "1",
+    "metadata": {
+        "timestamp": "2023-12-19T21:25:43.268551",
+        "component": {
+            "group": "",
+            "name": "SBOM-Generator",
+            "version": "0.0.0",
+            "type": "application"
+        }
+    },
+    "components": [],
+    "services": [],
+    "dependencies": []
+}

@@ -45,6 +45,7 @@ def get_project_path():
     else:
         project_path = os.path.join(os.getcwd(), user_input_path)
     user_input_format = input("📄 Output Format (xml/json): ")
+    user_input_report = input("📄 Include vulnerability information (yes/no): ")
     if user_input_format not in ['xml', 'json'] or user_input_format == 'json':
         if user_input_format not in ['xml','json']: print('Invalid output format\n\nGenerating in json')
         output_file = 'json'
@@ -52,4 +53,4 @@ def get_project_path():
             output_file = 'xml'
     else:
         output_file = 'json'
-    return project_path, output_file
+    return project_path, output_file, user_input_report

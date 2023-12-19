@@ -127,7 +127,7 @@ if __name__ == "__main__":
 
         project_path = user_input_path
     else:
-        project_path, output_file= get_project_path()
+        project_path, output_file, user_input_report= get_project_path()
         output_file = f"sbom.{output_file}"
     project_path = os.path.abspath(project_path)
     if(output_file==""):
@@ -148,7 +148,7 @@ if __name__ == "__main__":
         createsbomXML(project_path)    
     print(f"\n✅ SBOM generated successfully!")
     print(f"📄 SBOM file is located at: {os.path.join(project_path, output_file)}")
-    if args.vul:
-        subprocess.run(["depscan", "--bom", project_path], shell=True)
+    if args.vul or user_input_report=='yes':
+        subprocess.run(["depscan", "--bom", os.path.join(project_path, output_file)], shell=True)
         print(f"\n✅ Vulnerability Report generated successfully, Please take the necessary actions")
 

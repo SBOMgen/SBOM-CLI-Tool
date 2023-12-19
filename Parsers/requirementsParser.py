@@ -8,6 +8,8 @@ def requirementsParser(path, sbom):
         with open(p, "r", encoding="utf-8") as file:
             for line in file:
                 line = line.strip()
+                if (line==""):
+                    continue
                 if ('#' not in line):
                     sline = line.split('==')
                     group=''

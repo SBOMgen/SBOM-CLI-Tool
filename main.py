@@ -3,6 +3,7 @@ import json, os
 import datetime
 import argparse
 import dicttoxml
+import subprocess
 import xml.etree.ElementTree as ET
 from xml.dom.minidom import parseString
 
@@ -115,7 +116,8 @@ if __name__ == "__main__":
     # Add the arguments
     parser.add_argument('-p', '--project_path', type=str, help='The path to the project')
     parser.add_argument('-f', '--format', type=str, help='The output file format')
-
+    parser.add_argument('--vul', action='store_true', help='Include vulnerability information (yes/no)')
+    
     args = parser.parse_args()
     output_file=''
     if args.project_path:
@@ -139,11 +141,14 @@ if __name__ == "__main__":
             
         else:
             output_file = 'sbom.json'
+    print("\n🚀 Generating SBOM...")
     if output_file=='sbom.json':
         createsbomJson(project_path)
     else:
-        createsbomXML(project_path)            
-    print("\n🚀 Generating SBOM...")
+        createsbomXML(project_path)    
     print(f"\n✅ SBOM generated successfully!")
     print(f"📄 SBOM file is located at: {os.path.join(project_path, output_file)}")
+    if args.vul:
+        subprocess.run(["depscan", "--bom", project_path], shell=True)
+        print(f"\n✅ Vulnerability Report generated successfully, Please take the necessary actions")
 

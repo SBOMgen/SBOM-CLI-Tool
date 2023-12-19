@@ -8,7 +8,7 @@ def dartParser(path, sbom):
             packages = data.get("packages", [])
             for name, package in packages.items():
                 version = package.get("version", "")
-                purl = f"pkg:dart/{name}@{version}"
+                purl = f"pkg:pub/{name}@{version}"
                 bomref = purl
                 sbom["components"].append(
                     {

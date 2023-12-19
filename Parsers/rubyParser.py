@@ -1,6 +1,9 @@
 import os
 import re
 import glob
+import subprocess
+from Utility.helpers import change_directory
+
 global_dict =[]
 def global_dict_list(content):
     current_gem = None
@@ -110,11 +113,18 @@ def parse_gemfile_lock(content, sbom, lock_file_path):
     
 
 def rubyparser(path, sbom):
-   for p in glob.glob(os.path.join(path, "**", 'Gemfile.lock'), recursive=True):
-       with open(p, 'r') as lock_file:
-           gemfile_lock_content = lock_file.read()
+    try:
+        subprocess.run(["gem", "install", "bundler"], check=True)
+        print("Bundler installed successfully.")
+        change_directory(os.getcwd, path)
+        subprocess.run(["bundle", "install"], check=True)
+    except subprocess.CalledProcessError as e:
+        print(f"Error installing Bundler: {e}")
+    for p in glob.glob(os.path.join(path, "**", 'Gemfile.lock'), recursive=True):
+        with open(p, 'r') as lock_file:
+            gemfile_lock_content = lock_file.read()
 
-       sbom = parse_gemfile_lock(gemfile_lock_content, sbom, p)
+        sbom = parse_gemfile_lock(gemfile_lock_content, sbom, p)
 
    
 

@@ -10,8 +10,8 @@ def phpParser(path, sbom):
             packages = data["packages"] + data["packages-dev"]
             for i in packages:
                 if len(i["name"].split("/")) == 2:
-                    name = i["name"].split("/")[0]
-                    group = i["name"].split("/")[1]
+                    name = i["name"].split("/")[1]
+                    group = i["name"].split("/")[0]
                 else:
                     name = i["name"]
                     group = ""
@@ -23,7 +23,7 @@ def phpParser(path, sbom):
                     purl = f"pkg:composer/{name}@{version}"
                     bomref = purl
                 else:
-                    purl = f"pkg:composer/%40{group[1:]}%2F{name}@{version}"
+                    purl = f"pkg:composer/{group}/{name}@{version}"
                     bomref = f"pkg:composer/{group}/{name}@{version}"
                 license = i.get("license", [])
                 licenses = []

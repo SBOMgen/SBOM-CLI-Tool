@@ -33,6 +33,7 @@ def parse_gemfile_lock(content, sbom, lock_file_path):
                 "name": current_gem,
                 "version": match_gem.group(2),
                 "type": "library",
+                "purl": f"pkg:gem/{current_gem}@{match_gem.group(2)}",
                 "bom-ref": f"pkg:gem/{current_gem}@{match_gem.group(2)}",
                 "dependsOn":[],
                 "evidence": {

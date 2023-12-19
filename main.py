@@ -149,6 +149,6 @@ if __name__ == "__main__":
     print(f"\n✅ SBOM generated successfully!")
     print(f"📄 SBOM file is located at: {os.path.join(project_path, output_file)}")
     if args.vul or user_input_report=='yes':
-        subprocess.run(["depscan", "--bom", os.path.join(project_path, output_file)], shell=True)
+        subprocess.run(["depscan", "--bom", os.path.join(project_path, output_file), "-o", os.path.join(project_path, "Report.html")], shell=True)
         print(f"\n✅ Vulnerability Report generated successfully, Please take the necessary actions")
 

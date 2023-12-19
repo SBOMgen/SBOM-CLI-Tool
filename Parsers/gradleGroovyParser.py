@@ -5,18 +5,17 @@ import re
 
 def gradleGroovyParser(path, sbom):
     paths = glob.glob(os.path.join(path, "**", "build.gradle"), recursive=True)
-
+    
     for p in paths:
         dependencies = {}
         with open(p, "r") as file:
             content = file.read()
-
             name = os.path.split(os.path.dirname(p))[-1]
 
-            group_match = re.search(r"group = '(.*)'", content)
+            group_match = re.search(r"group '(.*)'", content)
             grp = group_match.group(1) if group_match else ""
 
-            version_match = re.search(r"version = '(.*)'", content)
+            version_match = re.search(r"version '(.*)'", content)
             ver = version_match.group(1) if version_match else ""
 
             source_match = re.search(r"sourceCompatibility = (.*)", content)

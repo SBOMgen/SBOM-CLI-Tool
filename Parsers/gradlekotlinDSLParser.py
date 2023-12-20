@@ -43,6 +43,7 @@ def gradlekotlinDSLParser(path, sbom):
             )
         with open(p, "r") as file:
             inside_dependencies = False
+            varname={}
             for line in file:
                 line = line.strip()
                 if line == "dependencies {":
@@ -52,9 +53,16 @@ def gradlekotlinDSLParser(path, sbom):
                     if inside_dependencies:
                         break
                 elif inside_dependencies:
+                    match = re.match(r"val (.+) = \"(.+)\"", line)
+                    if match:
+
+                        key=match.group(1)
+                        varname[key]=match.group(2)
                     match = re.match(r"(\w+)\(\"(.+):(.+):(.+)\"\)", line)
                     if match:
                         scope, group, name, version = match.groups()
+                        if version[1:] in varname.keys():
+                            version = varname[version[1:]]
 
                         purl = f"pkg:maven/{group}/{name}@{version}"
                         bomref = purl

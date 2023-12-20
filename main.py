@@ -5,6 +5,7 @@ import argparse
 import dicttoxml
 import subprocess
 import xml.etree.ElementTree as ET
+import shutil
 from xml.dom.minidom import parseString
 
 from Parsers.conanParser import conanParser
@@ -23,8 +24,13 @@ from Parsers.requirementsParser import requirementsParser
 from Parsers.gomodParser import goModParser
 from Utility.helpers import get_project_path
 from Utility.dependencyTree import DependencyTree
+from Utility.zip import zip_extract
 
 def createsbomJson(path):
+    output_path=os.path.join(path,'sbom.json')
+    if(os.path.split(path)[-1].split('.')[-1] == 'zip'):
+        output_path=os.path.join(os.path.dirname(path),'sbom.json')
+        path=zip_extract(path)
     projname = os.path.split(path)[-1]
     sbom = {
         "bomFormat": "CycloneDX",
@@ -58,8 +64,8 @@ def createsbomJson(path):
     swiftParser(path, sbom)
     rubyparser(path,sbom)
     goModParser(path,sbom)
-
-    with open(os.path.join(path, "sbom.json"), "w", encoding="utf-8") as file:
+    print(output_path)
+    with open(output_path, "w", encoding="utf-8") as file:
         json.dump(sbom, file, indent=4)
 
         file.close()
@@ -68,6 +74,10 @@ def createsbomJson(path):
 import xml.etree.ElementTree as ET
 
 def createsbomXML(path):
+    output_path=os.path.join(path,'sbom.xml')
+    if(os.path.split(path)[-1].split('.')[-1] == 'zip'):
+        output_path=os.path.join(os.path.dirname(path),'sbom.xml')
+        path=zip_extract(path)
     projname = os.path.split(path)[-1]
     sbom = {
         "bomFormat": "CycloneDX",
@@ -106,15 +116,13 @@ def createsbomXML(path):
     xmlStr = dicttoxml.dicttoxml(sbom)
     dom = parseString(xmlStr)
     prettyXML = dom.toprettyxml()
-    with open(os.path.join(path, "sbom.xml"), "w") as file:
+    with open(output_path, "w") as file:
         file.write(prettyXML)
     return sbom
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Generate Software Bill of Materials (SBOM) for a project.')
-    # parser = argparse.ArgumentParser(description='Generate SBOM')
 
-    # Add the arguments
     parser.add_argument('-p', '--project_path', type=str, help='The path to the project')
     parser.add_argument('-f', '--format', type=str, help='The output file format')
     parser.add_argument('--vul', action='store_true', help='Include vulnerability information (yes/no)')
@@ -145,11 +153,17 @@ if __name__ == "__main__":
             
         else:
             output_file = 'sbom.json'
+    
     print("\n🚀 Generating SBOM...")
     if output_file=='sbom.json':
         sbom=createsbomJson(project_path)
     else:
         sbom = createsbomXML(project_path)
+    zipFlag=False
+    if(os.path.split(project_path)[-1].split('.')[-1] == 'zip'):
+        shutil.rmtree(os.path.join(os.path.split(project_path)[0], os.path.splitext(os.path.basename(project_path))[0]), ignore_errors=True)
+        project_path=os.path.dirname(project_path)
+        zipFlag=True
     if args.tree or treeFlag:
         DependencyTree(sbom, project_path)
     print(f"\n✅ SBOM generated successfully!")

@@ -26,11 +26,7 @@ from Utility.helpers import get_project_path
 from Utility.dependencyTree import DependencyTree
 from Utility.zip import zip_extract
 
-def createsbomJson(path):
-    output_path=os.path.join(path,'sbom.json')
-    if(os.path.split(path)[-1].split('.')[-1] == 'zip'):
-        output_path=os.path.join(os.path.dirname(path),'sbom.json')
-        path=zip_extract(path)
+def createSbom(path):
     projname = os.path.split(path)[-1]
     sbom = {
         "bomFormat": "CycloneDX",
@@ -49,7 +45,6 @@ def createsbomJson(path):
         "services": [],
         "dependencies": [],
     }
-
     phpParser(path, sbom)
     npmParser(path, sbom)
     YarnParser(path, sbom)
@@ -64,7 +59,14 @@ def createsbomJson(path):
     swiftParser(path, sbom)
     rubyparser(path,sbom)
     goModParser(path,sbom)
-    print(output_path)
+    return sbom
+
+def createsbomJson(path):
+    output_path=os.path.join(path,'sbom.json')
+    if(os.path.split(path)[-1].split('.')[-1] == 'zip'):
+        output_path=os.path.join(os.path.dirname(path),'sbom.json')
+        path=zip_extract(path)
+    sbom = createSbom(path)
     with open(output_path, "w", encoding="utf-8") as file:
         json.dump(sbom, file, indent=4)
 
@@ -78,41 +80,7 @@ def createsbomXML(path):
     if(os.path.split(path)[-1].split('.')[-1] == 'zip'):
         output_path=os.path.join(os.path.dirname(path),'sbom.xml')
         path=zip_extract(path)
-    projname = os.path.split(path)[-1]
-    sbom = {
-        "bomFormat": "CycloneDX",
-        "specVersion": "1.5",
-        "version": "1",
-        "metadata": {
-            "timestamp": datetime.datetime.now().isoformat(),
-            "component": {
-                "group": "",
-                "name": projname,
-                "version": "0.0.0",
-                "type": "application",
-            },
-        },
-        "components": [],
-        "services": [],
-        "dependencies": [],
-    }
-
-    phpParser(path, sbom)
-    npmParser(path, sbom)
-    YarnParser(path, sbom)
-    requirementsParser(path, sbom)
-    conanParser(path, sbom)
-    dartParser(path, sbom)
-    dotnetParser(path, sbom)
-    gradleGroovyParser(path, sbom)
-    gradlekotlinDSLParser(path, sbom)
-    mavenParser(path, sbom)
-    rustParser(path, sbom)
-    swiftParser(path, sbom)
-    rubyparser(path,sbom)
-    goModParser(path,sbom)
-
-    
+    sbom = createSbom(path)
     xmlStr = dicttoxml.dicttoxml(sbom)
     dom = parseString(xmlStr)
     prettyXML = dom.toprettyxml()

@@ -25,6 +25,9 @@ def goModParser(path,sbom):
                     match = re.match(r"(.*)\s(.*)", line)
                     if match:
                         name, version = match.groups()
+                        if version == "indirect":
+                            version= name.split()[1]
+                            name = name.split()[0]
                         purl = f"pkg:golang/{name}@{version}"
                         bomref = purl
                         sbom["components"].append(

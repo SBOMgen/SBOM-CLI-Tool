@@ -161,7 +161,7 @@ if __name__ == "__main__":
         sbom = createsbomXML(project_path)
     zipFlag=False
     if(os.path.split(project_path)[-1].split('.')[-1] == 'zip'):
-        shutil.rmtree(os.path.join(os.path.split(project_path)[0], os.path.splitext(os.path.basename(project_path))[0]), ignore_errors=True)
+        # shutil.rmtree(os.path.join(os.path.split(project_path)[0], os.path.splitext(os.path.basename(project_path))[0]), ignore_errors=True)
         project_path=os.path.dirname(project_path)
         zipFlag=True
     if args.tree or treeFlag:
